@@ -167,3 +167,22 @@ class NotesResourceTest(TestCase):
         self.assertTrue(
             "{0}".format(note['owner']) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
+
+    def test_user_can_view_a_notes_object_details(self):
+        """
+        test user can view the details of a note
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+
+        note = self.create_note(user_obj.id)
+        note_obj = models.Notes.objects.filter(title=note['title'])[0]
+        
+        note_get_list_url = reverse(
+            'notes-detail', kwargs={'pk': note_obj.id})
+        response = self.client.get(note_get_list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(note['title'] in response.content.decode('ascii'))
+        self.assertTrue(
+            "{0}".format(note['owner']) in response.content.decode('ascii'))
+        self.assertTrue(note['note'] in response.content.decode('ascii'))
