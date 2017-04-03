@@ -219,3 +219,17 @@ class NotesResourceTest(TestCase):
             new_note_data['note'] in response.content.decode('ascii'))
         self.assertFalse(note['title'] in response.content.decode('ascii'))
         self.assertFalse(note['note'] in response.content.decode('ascii'))
+
+    def test_user_can_delete_note(self):
+        """
+        tests that a user can delete a note
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+
+        note = self.create_note(user_obj.id)
+        note_obj = models.Notes.objects.filter(title=note['title'])[0]
+
+        note_delete_url = reverse('notes-detail', kwargs={'pk': user_obj.id})
+        response = self.client.delete(note_delete_url)
+        self.assertEqual(response.status_code, 204)
