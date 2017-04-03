@@ -4,6 +4,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+from api import models
+
 
 # Create your tests here.
 class UserResourceTest(TestCase):
@@ -116,6 +118,19 @@ class NotesResourceTest(TestCase):
         response = self.client.post(user_create_url, user)
         return user
 
+    def create_note(self, owner_id):
+        """
+        helper method for creating notes
+        """
+        note_create_url = reverse('notes-list')
+        note = {
+            'title': 'Test create note',
+            'note': 'This note was created in the helper function',
+            'owner': owner_id
+        }
+        self.client.post(note_create_url, note)
+        return note
+
     def test_user_can_create_note(self):
         """
         test that a user can create a note
@@ -132,5 +147,23 @@ class NotesResourceTest(TestCase):
         response = self.client.post(note_create_url, note)
         self.assertEqual(response.status_code, 201)
         self.assertTrue(note['title'] in response.content.decode('ascii'))
+        self.assertTrue(
+            "{0}".format(note['owner']) in response.content.decode('ascii'))
+        self.assertTrue(note['note'] in response.content.decode('ascii'))
+
+    def test_user_can_view_notes_list(self):
+        """
+        test user can view a list of notes
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+
+        note = self.create_note(user_obj.id)
+        
+        note_get_list_url = reverse('notes-list')
+        response = self.client.get(note_get_list_url)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(note['title'] in response.content.decode('ascii'))
+        self.assertTrue(
+            "{0}".format(note['owner']) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
