@@ -10,7 +10,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     Viewset to enable CRUD operations on the User resource.
     """
-    queryset = User.objects.all()
+    queryset = models.NotesUser.objects.all()
     serializer_class = serializers.UserSerializer
 
     def create(self, request, pk=None):
@@ -19,7 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user = User(username=serializer.validated_data['username'])
+            user = models.NotesUser(username=serializer.validated_data['username'])
             user.set_password(serializer.validated_data['password'])
             user.save()
             return Response(
