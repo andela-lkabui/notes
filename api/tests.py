@@ -22,4 +22,20 @@ class UserResourceTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertTrue('username' in response.content.decode('ascii'))
         self.assertTrue(user['username'] in response.content.decode('ascii'))
+
+    def test_user_can_retrieve_user_list(self):
+        """
+        test that a user can view a list of users using get(list)
+        """
+        user_create_url = reverse('user-list')
+        # first create a user
+        user = {
+            "username": "testuser",
+            "password": "12345"
+        }
+        response = self.client.post(user_create_url, user)
+        # then perform the get(list)
+        response = self.client.get(user_create_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('testuser' in response.content.decode('ascii'))
         
