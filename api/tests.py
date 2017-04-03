@@ -97,3 +97,40 @@ class UserResourceTest(TestCase):
         user_delete_url = reverse('user-detail', kwargs={'pk': user_obj.id})
         response = self.client.delete(user_delete_url)
         self.assertEqual(response.status_code, 204)
+
+
+class NotesResourceTest(TestCase):
+    """
+    Tests the CRUD methods in notes resource.
+    """
+    def create_user(self):
+        """
+        helper method for creating users
+        """
+        user_create_url = reverse('user-list')
+        # first create a user
+        user = {
+            "username": "testuser",
+            "password": "12345"
+        }
+        response = self.client.post(user_create_url, user)
+        return user
+
+    def test_user_can_create_note(self):
+        """
+        test that a user can create a note
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+
+        note_create_url = reverse('notes-list')
+        note = {
+            'title': 'Test note',
+            'note': 'The quick brown fox',
+            'owner': user_obj.id
+        }
+        response = self.client.post(note_create_url, note)
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(note['title'] in response.content.decode('ascii'))
+        self.assertTrue(note['title'] in response.content.decode('ascii'))
+        self.assertTrue(note['note'] in response.content.decode('ascii'))
