@@ -87,3 +87,13 @@ class UserResourceTest(TestCase):
         response = self.client.put(
             user_put_detail, json_data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
+
+    def test_user_can_delete_user_detail(self):
+        """
+        test that a user can delete user from database
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+        user_delete_url = reverse('user-detail', kwargs={'pk': user_obj.id})
+        response = self.client.delete(user_delete_url)
+        self.assertEqual(response.status_code, 204)
