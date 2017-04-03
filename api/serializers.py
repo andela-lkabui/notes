@@ -11,8 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ('username', )
-        write_only_fields = ('password',)
+        fields = ('username', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
 
 class NoteSerializer(serializers.ModelSerializer):
