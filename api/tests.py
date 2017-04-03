@@ -99,7 +99,7 @@ class UserResourceTest(TestCase):
         user_delete_url = reverse('user-detail', kwargs={'pk': user_obj.id})
         response = self.client.delete(user_delete_url)
         self.assertEqual(response.status_code, 204)
-
+        
 
 class NotesResourceTest(TestCase):
     """
@@ -233,3 +233,14 @@ class NotesResourceTest(TestCase):
         note_delete_url = reverse('notes-detail', kwargs={'pk': user_obj.id})
         response = self.client.delete(note_delete_url)
         self.assertEqual(response.status_code, 204)
+
+    def test_user_can_access_token(self):
+        """
+        test that a user can input username and password and access token
+        """
+        user = self.create_user()
+        login_url = reverse('api-auth')
+
+        response = self.client.post(login_url, user)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('token' in response.content.decode('ascii'))
