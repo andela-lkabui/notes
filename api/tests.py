@@ -2,7 +2,6 @@ import json
 
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
 
 from api import models
 
@@ -16,7 +15,7 @@ class UserResourceTest(TestCase):
         """
         helper method for creating users
         """
-        user_create_url = reverse('user-list')
+        user_create_url = reverse('notesuser-list')
         # first create a user
         user = {
             "username": "testuser",
@@ -29,7 +28,7 @@ class UserResourceTest(TestCase):
         """
         Test that user can perform a POST operation on this resource.
         """
-        user_create_url = reverse('user-list')
+        user_create_url = reverse('notesuser-list')
 
         user = {
             "username": "testuser",
@@ -44,7 +43,7 @@ class UserResourceTest(TestCase):
         """
         test that a user can view a list of users using get(list)
         """
-        user_create_url = reverse('user-list')
+        user_create_url = reverse('notesuser-list')
         # first create a user
         user = {
             "username": "testuser",
@@ -60,7 +59,7 @@ class UserResourceTest(TestCase):
         """
         test that a user can view a single user
         """
-        user_create_url = reverse('user-list')
+        user_create_url = reverse('notesuser-list')
         # first create a user
         user = {
             "username": "testuser",
@@ -68,8 +67,8 @@ class UserResourceTest(TestCase):
         }
         response = self.client.post(user_create_url, user)
         # then perform the get(detail), but first, we need the user's id
-        user_obj = User.objects.filter(username=user['username'])[0]
-        user_get_detail = reverse('user-detail', kwargs={'pk': user_obj.id})
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        user_get_detail = reverse('notesuser-detail', kwargs={'pk': user_obj.id})
         response = self.client.get(user_get_detail)
         self.assertEqual(response.status_code, 200)
         self.assertTrue('testuser' in response.content.decode('ascii'))
@@ -79,8 +78,8 @@ class UserResourceTest(TestCase):
         test that a user can edit user details
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
-        user_put_detail = reverse('user-detail', kwargs={'pk': user_obj.id})
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        user_put_detail = reverse('notesuser-detail', kwargs={'pk': user_obj.id})
         new_data = {
             'username': "testuser",
             'password': "67890"
@@ -95,11 +94,11 @@ class UserResourceTest(TestCase):
         test that a user can delete user from database
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
-        user_delete_url = reverse('user-detail', kwargs={'pk': user_obj.id})
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        user_delete_url = reverse('notesuser-detail', kwargs={'pk': user_obj.id})
         response = self.client.delete(user_delete_url)
         self.assertEqual(response.status_code, 204)
-        
+
 
 class NotesResourceTest(TestCase):
     """
@@ -109,7 +108,7 @@ class NotesResourceTest(TestCase):
         """
         helper method for creating users
         """
-        user_create_url = reverse('user-list')
+        user_create_url = reverse('notesuser-list')
         # first create a user
         user = {
             "username": "testuser",
@@ -136,7 +135,7 @@ class NotesResourceTest(TestCase):
         test that a user can create a note
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
 
         note_create_url = reverse('notes-list')
         note = {
@@ -156,7 +155,7 @@ class NotesResourceTest(TestCase):
         test user can view a list of notes
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
 
         note = self.create_note(user_obj.id)
         
@@ -173,7 +172,7 @@ class NotesResourceTest(TestCase):
         test user can view the details of a note
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
 
         note = self.create_note(user_obj.id)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
@@ -192,7 +191,7 @@ class NotesResourceTest(TestCase):
         test that a user can edit note details
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
+        user_obj = models.User.objects.filter(username=user['username'])[0]
 
         note = self.create_note(user_obj.id)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
@@ -225,7 +224,7 @@ class NotesResourceTest(TestCase):
         tests that a user can delete a note
         """
         user = self.create_user()
-        user_obj = User.objects.filter(username=user['username'])[0]
+        user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
 
         note = self.create_note(user_obj.id)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
