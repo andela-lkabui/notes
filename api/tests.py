@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 # Create your tests here.
@@ -38,4 +39,21 @@ class UserResourceTest(TestCase):
         response = self.client.get(user_create_url)
         self.assertEqual(response.status_code, 200)
         self.assertTrue('testuser' in response.content.decode('ascii'))
-        
+
+    def test_user_can_retrieve_a_single_user(self):
+        """
+        test that a user can view a single user
+        """
+        user_create_url = reverse('user-list')
+        # first create a user
+        user = {
+            "username": "testuser",
+            "password": "12345"
+        }
+        response = self.client.post(user_create_url, user)
+        # then perform the get(detail), but first, we need the user's id
+        user_obj = User.objects.filter(username=user['username'])[0]
+        user_get_detail = reverse('user-detail', kwargs={'pk': user_obj.id})
+        response = self.client.get(user_get_detail)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('testuser' in response.content.decode('ascii'))
