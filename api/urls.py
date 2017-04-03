@@ -24,6 +24,7 @@ from api import viewsets
 
 router = routers.SimpleRouter()
 router.register('users', viewsets.UserViewSet)
+router.register('notes', viewsets.NoteViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
