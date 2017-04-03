@@ -186,3 +186,36 @@ class NotesResourceTest(TestCase):
         self.assertTrue(
             "{0}".format(note['owner']) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
+
+    def test_user_can_edit_note_detail(self):
+        """
+        test that a user can edit note details
+        """
+        user = self.create_user()
+        user_obj = User.objects.filter(username=user['username'])[0]
+
+        note = self.create_note(user_obj.id)
+        note_obj = models.Notes.objects.filter(title=note['title'])[0]
+
+        new_note_data = {
+            'title': 'Editing a new note object',
+            'note': 'We are testing the ability to edit details in a note',
+            'owner': user_obj.id
+        }
+
+        note_put_detail = reverse('notes-detail', kwargs={'pk': user_obj.id})
+        
+        json_data = json.dumps(new_note_data)
+        response = self.client.put(
+            note_put_detail, json_data, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            new_note_data['title'] in response.content.decode('ascii'))
+        self.assertTrue(
+            "{0}".format(new_note_data['owner']) in response.content.decode(
+                'ascii')
+        )
+        self.assertTrue(
+            new_note_data['note'] in response.content.decode('ascii'))
+        self.assertFalse(note['title'] in response.content.decode('ascii'))
+        self.assertFalse(note['note'] in response.content.decode('ascii'))
