@@ -12,6 +12,10 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = models.NotesUser.objects.all()
     serializer_class = serializers.UserSerializer
+    permission_classes = (
+        # permissions.IsAuthenticatedOrReadOnly,
+        custom_permissions.IsUserOwner,
+    )
 
     def create(self, request, pk=None):
         """
@@ -36,7 +40,7 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        custom_permissions.IsOwner,
+        custom_permissions.IsNoteOwner,
     )
     queryset = models.Notes.objects.all()
     serializer_class = serializers.NoteSerializer
