@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 
-from api import serializers, models
+from api import serializers, models, custom_permissions
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -33,6 +33,11 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
     Viewset to enable CRUD operations on the User resource.
     """
+
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        custom_permissions.IsOwner,
+    )
     queryset = models.Notes.objects.all()
     serializer_class = serializers.NoteSerializer
 
