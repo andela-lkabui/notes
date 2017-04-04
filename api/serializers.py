@@ -27,3 +27,4 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Notes
         fields = ('title', 'note', 'owner')
+        read_only_fields = ('owner',)

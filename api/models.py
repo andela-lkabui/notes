@@ -19,4 +19,4 @@ class Notes(models.Model):
     """
     title = models.CharField(max_length=100, blank=False)
     note = models.CharField(max_length=140, blank=False)
-    owner = models.ForeignKey(NotesUser, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)

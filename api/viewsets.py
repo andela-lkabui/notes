@@ -35,3 +35,16 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
     queryset = models.Notes.objects.all()
     serializer_class = serializers.NoteSerializer
+
+    def create(self, request, pk=None):
+        """
+        customize note post operation
+        """
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            note = models.Notes(**serializer.validated_data)
+            note.owner = request.user
+            note.save()
+            return Response(
+                serializer.validated_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
