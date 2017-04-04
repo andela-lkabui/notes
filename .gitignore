@@ -3,3 +3,6 @@ db.sqlite3
 
 # Ignore compiled python files
 *.pyc
+
+# Ignore coverage report
+.coverage
