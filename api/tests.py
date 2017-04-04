@@ -1,13 +1,14 @@
 import json
 
-from django.test import TestCase
 from django.urls import reverse
+
+from rest_framework.test import APITestCase
 
 from api import models
 
 
 # Create your tests here.
-class UserResourceTest(TestCase):
+class UserResourceTest(APITestCase):
     """
     Tests the CRUD methods in user resource.
     """
@@ -23,6 +24,15 @@ class UserResourceTest(TestCase):
         }
         response = self.client.post(user_create_url, user)
         return user
+
+    def login_user(self, user):
+        """
+        helper method for user login
+        """
+        login_url = reverse('api-auth')
+        response = self.client.post(login_url, user)
+        json_data = json.loads(response.content.decode('ascii'))
+        return json_data['token']
 
     def test_user_can_create_profile(self):
         """
@@ -78,6 +88,9 @@ class UserResourceTest(TestCase):
         test that a user can edit user details
         """
         user = self.create_user()
+        token = self.login_user(user)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {0}'.format(token))
+        
         user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
         user_put_detail = reverse('notesuser-detail', kwargs={'pk': user_obj.id})
         new_data = {
@@ -94,13 +107,16 @@ class UserResourceTest(TestCase):
         test that a user can delete user from database
         """
         user = self.create_user()
+        token = self.login_user(user)
+
         user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
         user_delete_url = reverse('notesuser-detail', kwargs={'pk': user_obj.id})
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {0}'.format(token))
         response = self.client.delete(user_delete_url)
         self.assertEqual(response.status_code, 204)
 
 
-class NotesResourceTest(TestCase):
+class NotesResourceTest(APITestCase):
     """
     Tests the CRUD methods in notes resource.
     """
@@ -117,7 +133,16 @@ class NotesResourceTest(TestCase):
         response = self.client.post(user_create_url, user)
         return user
 
-    def create_note(self, owner_id):
+    def login_user(self, user):
+        """
+        helper method for user login
+        """
+        login_url = reverse('api-auth')
+        response = self.client.post(login_url, user)
+        json_data = json.loads(response.content.decode('ascii'))
+        return json_data['token']
+
+    def create_note(self, token):
         """
         helper method for creating notes
         """
@@ -125,9 +150,9 @@ class NotesResourceTest(TestCase):
         note = {
             'title': 'Test create note',
             'note': 'This note was created in the helper function',
-            'owner': owner_id
         }
-        self.client.post(note_create_url, note)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {0}'.format(token))
+        response = self.client.post(note_create_url, note)
         return note
 
     def test_user_can_create_note(self):
@@ -143,11 +168,11 @@ class NotesResourceTest(TestCase):
             'note': 'The quick brown fox',
             'owner': user_obj.id
         }
+        token = self.login_user(user)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT {0}'.format(token))
         response = self.client.post(note_create_url, note)
         self.assertEqual(response.status_code, 201)
         self.assertTrue(note['title'] in response.content.decode('ascii'))
-        self.assertTrue(
-            "{0}".format(note['owner']) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
 
     def test_user_can_view_notes_list(self):
@@ -156,15 +181,16 @@ class NotesResourceTest(TestCase):
         """
         user = self.create_user()
         user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        token = self.login_user(user)
 
-        note = self.create_note(user_obj.id)
+        note = self.create_note(token)
         
         note_get_list_url = reverse('notes-list')
         response = self.client.get(note_get_list_url)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(note['title'] in response.content.decode('ascii'))
         self.assertTrue(
-            "{0}".format(note['owner']) in response.content.decode('ascii'))
+            "{0}".format(user_obj.id) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
 
     def test_user_can_view_a_notes_object_details(self):
@@ -173,8 +199,9 @@ class NotesResourceTest(TestCase):
         """
         user = self.create_user()
         user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        token = self.login_user(user)
 
-        note = self.create_note(user_obj.id)
+        note = self.create_note(token)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
         
         note_get_list_url = reverse(
@@ -183,7 +210,7 @@ class NotesResourceTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(note['title'] in response.content.decode('ascii'))
         self.assertTrue(
-            "{0}".format(note['owner']) in response.content.decode('ascii'))
+            "{0}".format(note_obj.owner.id) in response.content.decode('ascii'))
         self.assertTrue(note['note'] in response.content.decode('ascii'))
 
     def test_user_can_edit_note_detail(self):
@@ -192,8 +219,9 @@ class NotesResourceTest(TestCase):
         """
         user = self.create_user()
         user_obj = models.User.objects.filter(username=user['username'])[0]
+        token = self.login_user(user)
 
-        note = self.create_note(user_obj.id)
+        note = self.create_note(token)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
 
         new_note_data = {
@@ -225,8 +253,9 @@ class NotesResourceTest(TestCase):
         """
         user = self.create_user()
         user_obj = models.NotesUser.objects.filter(username=user['username'])[0]
+        token = self.login_user(user)
 
-        note = self.create_note(user_obj.id)
+        note = self.create_note(token)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
 
         note_delete_url = reverse('notes-detail', kwargs={'pk': user_obj.id})
