@@ -6,3 +6,10 @@ db.sqlite3
 
 # Ignore coverage report
 .coverage
+
+# Ignore local env variables file
+.env
+.envrc
+
+# Ignore static root folder
+assets
