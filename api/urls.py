@@ -19,7 +19,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt import views
 
 from api import viewsets
 
@@ -29,6 +29,7 @@ router.register('notes', viewsets.NoteViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'api-token-auth/', obtain_jwt_token, name='api-auth'),
+    url(r'^api-token-auth/', views.obtain_jwt_token, name='api-auth'),
+    url(r'^api-token-verify/', views.verify_jwt_token, name='verify-auth-token'),
     url(r'^docs/', include_docs_urls(title='Notes API')),
 ]
