@@ -29,6 +29,7 @@ router.register('notes', viewsets.NoteViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^me/', viewsets.whoami),
     url(r'^api-token-auth/', views.obtain_jwt_token, name='api-auth'),
     url(r'^api-token-verify/', views.verify_jwt_token, name='verify-auth-token'),
     url(r'^docs/', include_docs_urls(title='Notes API')),

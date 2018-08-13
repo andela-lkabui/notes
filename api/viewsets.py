@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
 from api import serializers, models, custom_permissions
 
@@ -57,3 +58,13 @@ class NoteViewSet(viewsets.ModelViewSet):
             return Response(
                 serializer.validated_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view()
+@permission_classes((permissions.IsAuthenticated,))
+def whoami(request):
+    return Response(
+        {
+            "username": request.user.username,
+            "id": request.user.id
+        }, status=status.HTTP_200_OK)
