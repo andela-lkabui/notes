@@ -33,6 +33,16 @@ class UserViewSet(viewsets.ModelViewSet):
                 }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, pk=None):
+        user = models.NotesUser.objects.get(pk=request.user.id)
+        user.set_password(request.data['password'])
+        user.save()
+        return Response(
+                {
+                    'details': "User password updated"
+                }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class NoteViewSet(viewsets.ModelViewSet):
     """
