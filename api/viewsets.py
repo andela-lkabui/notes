@@ -50,7 +50,6 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
         custom_permissions.IsNoteOwner,
     )
     queryset = models.Notes.objects.all()
@@ -68,6 +67,14 @@ class NoteViewSet(viewsets.ModelViewSet):
             return Response(
                 serializer.validated_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        """
+        returns all the notes belonging to the user who is currently logged in.
+        """
+        queryset = models.Notes.objects.filter(owner=request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 @api_view()
