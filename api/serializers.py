@@ -28,3 +28,4 @@ class NoteSerializer(serializers.ModelSerializer):
         model = models.Notes
         fields = ('id', 'title', 'note', 'owner')
         read_only_fields = ('owner',)
+        extra_kwargs = {'note': {'required': False}}
