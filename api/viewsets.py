@@ -64,8 +64,9 @@ class NoteViewSet(viewsets.ModelViewSet):
             note = models.Notes(**serializer.validated_data)
             note.owner = request.user
             note.save()
-            return Response(
-                serializer.validated_data, status=status.HTTP_201_CREATED)
+            resp = serializer.validated_data.copy()
+            resp['id'] = note.id
+            return Response(resp, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
