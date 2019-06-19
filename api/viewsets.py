@@ -74,6 +74,10 @@ class NoteViewSet(viewsets.ModelViewSet):
         returns all the notes belonging to the user who is currently logged in.
         """
         queryset = models.Notes.objects.filter(owner=request.user)
+        page = self.paginate_queryset(queryset)
+        if page:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
