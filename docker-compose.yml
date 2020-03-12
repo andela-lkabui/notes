@@ -1,11 +1,11 @@
 version: "3"
 services:
   db:
-    build:
-      context: db/
-    image: lewisemm/notes_api_db
-    ports: 
-      - "5432:5432"
+    image: postgres:9.6.17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes
   notes_api:
     build: .
     image: lewisemm/notes_api
