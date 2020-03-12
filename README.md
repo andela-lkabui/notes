@@ -29,10 +29,7 @@ export SETTINGS_MODULE=notes.settings.dev_settings
 export DATABASE_URL="postgresql://postgres:password@db:5432/notes"
 ```
 
-The `SETTINGS_MODULE` sets the settings file to `notes/settings/dev_settings.py`. Using this file, the app can run on development mode.
-
-The `DATABASE_URL` configures the app to use the `notes` database inside the `db` service using the `postgres` username and `password` password credentials.
-
+These environment variables are used in the `docker-compose.yml` file to configure the settings file and database service to be used by the containerized `notes_api` REST API.
 
 ## Running the app
 Using docker-compose, running the app is quite straightforward.
