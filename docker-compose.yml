@@ -1,0 +1,18 @@
+version: "3"
+services:
+  db:
+    image: postgres:9.6.17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes
+  notes_api:
+    build: .
+    image: lewisemm/notes_api
+    ports:
+      - "8080:8080"
+    environment:
+      SETTINGS_MODULE: $SETTINGS_MODULE
+      DATABASE_URL: $DATABASE_URL
+    depends_on:
+      - db
