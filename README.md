@@ -21,16 +21,6 @@ A simple REST API which allows authenticated users to create and edit notes.
     docker-compose --version
     ```
 
-## Setting up the development environment
-Before the app can be started, two environment variables must be configured with the following values on your system.
-
-```sh
-export SETTINGS_MODULE=notes.settings.dev_settings
-export DATABASE_URL="postgresql://postgres:password@db:5432/notes"
-```
-
-These environment variables are used in the `docker-compose.yml` file to configure the settings file and database service to be used by the containerized `notes_api` REST API.
-
 ## Running the app
 Using docker-compose, running the app is quite straightforward.
 
