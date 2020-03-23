@@ -33,5 +33,9 @@ docker-compose up
 To stop the app, use `Ctrl + C` to stop the `docker-compose up` command.
 
 
+## Documentation
+Documentation for this API can be accessed through [http://localhost:8080/api/docs](http://localhost:8080/api/docs)  on the browser once the app is running.
+
+
 ## Running the tests
 
