@@ -11,6 +11,4 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-DATABASES['default'] = dj_database_url.config()
-
 CORS_ORIGIN_ALLOW_ALL = True
