@@ -230,7 +230,7 @@ class NotesResourceTest(APITestCase):
             'owner': user_obj.id
         }
 
-        note_put_detail = reverse('notes-detail', kwargs={'pk': user_obj.id})
+        note_put_detail = reverse('notes-detail', kwargs={'pk': note_obj.id})
         
         json_data = json.dumps(new_note_data)
         response = self.client.put(
@@ -258,7 +258,7 @@ class NotesResourceTest(APITestCase):
         note = self.create_note(token)
         note_obj = models.Notes.objects.filter(title=note['title'])[0]
 
-        note_delete_url = reverse('notes-detail', kwargs={'pk': user_obj.id})
+        note_delete_url = reverse('notes-detail', kwargs={'pk': note_obj.id})
         response = self.client.delete(note_delete_url)
         self.assertEqual(response.status_code, 204)
 
