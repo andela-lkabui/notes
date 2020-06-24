@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -9,10 +9,16 @@ done
 
 >&2 echo "Postgres is up - executing command"
 
-# Apply database migrations
-echo "Apply database migrations"
-python manage.py migrate
+echo "The environment is: $ENVIRONMENT"
 
-# Start server
-echo "Starting server"
-python manage.py runserver 0.0.0.0:8080
+if [ "$ENVIRONMENT" == "TESTING" ]; then
+  python manage.py test
+else
+  # Apply database migrations
+  echo "Apply database migrations"
+  python manage.py migrate
+
+  # Start server
+  echo "Starting server"
+  python manage.py runserver 0.0.0.0:8080
+fi

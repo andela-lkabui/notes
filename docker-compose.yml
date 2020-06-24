@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: notes
-  notes_api:
+  api:
     build: .
     image: lewisemm/notes_api
     ports:
