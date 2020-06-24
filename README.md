@@ -30,7 +30,13 @@ Using docker-compose, running the app is quite straightforward.
 docker-compose up
 ```
 
-To stop the app, use `Ctrl + C` to stop the `docker-compose up` command.
+The app can be stopped in one of two ways;
+  * Pressing `Ctrl + C` keys on the terminal that is running `docker-compose up`.
+  * Opening a new terminal window and running the following command.
+
+    ```sh
+    docker-compose down
+    ```
 
 
 ## Documentation
@@ -38,4 +44,14 @@ Documentation for this API can be accessed through [http://localhost:8080/api/do
 
 
 ## Running the tests
+To run the tests, first make sure that the `test.sh` script has sufficient executable permissions.
 
+```sh
+sudo chmod 500 test.sh
+```
+
+Once that is done, the tests can be run by running the `test.sh` script.
+
+```sh
+./test.sh
+```
