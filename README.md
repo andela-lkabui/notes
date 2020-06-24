@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lewisemm/notes.svg?branch=master)](https://travis-ci.org/lewisemm/notes)
+
 # Notes REST API
 A simple REST API which allows authenticated users to create and edit notes.
 
